@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    id="com.biz4solutions.zoomplugin" version="0.0.1">
+    <name>Zoom</name>
+    <description>Plugin for Zoom Video conferencing</description>
+    <license>Apache 2.0</license>
+    <keywords>Zoom, Video Conference, Meeting</keywords>
+    <js-module src="www/zoom.js" name="zoom">
+        <clobbers target="zoom" />
+    </js-module>
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="ZoomPlugin">
+                <param name="ios-package" value="ZoomPlugin"/>
+                <!-- Load on startup to initialize the sdk and reduce time-->
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+        <header-file src="src/ios/ZoomPlugin.h" />
+        <source-file src="src/ios/ZoomPlugin.m" />
+    </platform>
+</plugin>
