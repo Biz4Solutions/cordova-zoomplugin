@@ -15,7 +15,10 @@
 #import <Cordova/CDV.h>
 
 @interface ZoomPlugin : CDVPlugin <ZoomSDKAuthDelegate, ZoomSDKMeetingServiceDelegate>
+    //used to create Zoom window. Required by Zoom API
     @property (strong, nonatomic) UIWindow *zoomWindow;
+    
+    //stores the command received from javascript
     @property (strong, nonatomic) CDVInvokedUrlCommand *command;
 
     - (void)joinMeeting:(CDVInvokedUrlCommand*)command;

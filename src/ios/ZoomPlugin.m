@@ -10,8 +10,8 @@
 #import <ZoomSDK/ZoomSDK.h>
 #import "ZoomPlugin.h"
 
-#define zoomSDKAppKey      @"client_keu"  //client key. replace with your client key
-#define zoomSDKAppSecret   @"client_secret"  //client secret. replace with client secret
+#define zoomSDKAppKey      @"client_key"  //client key
+#define zoomSDKAppSecret   @"client_secret"  //client secret
 #define zoomSDKDomain      @"zoom.us" //zoom domain, such as "zoom.us"
 
 
@@ -42,11 +42,11 @@
     //other events to send back result
     self.command = command;
     
-    CDVPluginResult* pluginResult = nil;
     
     NSString* meetingNumber = [command.arguments objectAtIndex:0];
     NSString* userDisplayName = [command.arguments objectAtIndex:1];
     
+    //zoom sdk requires a window with navigation controller
     self.zoomWindow = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     self.zoomWindow.backgroundColor = [UIColor clearColor];
@@ -160,6 +160,9 @@
     //NSLog(@"========= onMeetingReturn =================:%d, internalError:%d", error, internalError);
     if (error != ZoomSDKMeetError_Success)
     {
+        //remove the window
+        self.zoomWindow=nil;
+        
         [self.commandDelegate runInBackground:^{
             NSString* payload = [self returnErrorDescription: error];
                 CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:payload];
@@ -173,7 +176,11 @@
 {
 
     //NSLog(@"++++++++++++++ onMeetingStateChange +++++++++++++++++++:%d", state);
-    
+    //there does not seem to be any associated constant with state = 0
+    if (state ==0){
+        //remove the window
+        self.zoomWindow=nil;
+    }
 }
 
 
@@ -182,9 +189,12 @@
 
 - (void)onZoomSDKAuthReturn:(ZoomSDKAuthError)returnValue
 {
-    NSLog(@"onZoomSDKAuthReturn %d", returnValue);
+    //NSLog(@"onZoomSDKAuthReturn %d", returnValue);
     
     if (returnValue !=ZoomSDKAuthError_Success){
+        //remove the window
+        self.zoomWindow=nil;
+        
         [self.commandDelegate runInBackground:^{
             NSString* payload = [self returnAuthErrorDescription: returnValue];
             CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:payload];
